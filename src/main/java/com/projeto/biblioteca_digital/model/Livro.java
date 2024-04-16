@@ -3,7 +3,9 @@ package com.projeto.biblioteca_digital.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "tb_livro")
 public class Livro {
@@ -13,4 +15,6 @@ public class Livro {
     private String nome;
 
     private String descricao;
+
+    private float valor;
 }
