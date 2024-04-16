@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Usuario {
 
-    @Id
-    private Long id;
     private String nome;
     private String cpf;
     private String senha;
