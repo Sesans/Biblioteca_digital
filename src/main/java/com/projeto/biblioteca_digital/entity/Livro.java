@@ -1,23 +1,24 @@
-package com.projeto.biblioteca_digital.model;
+package com.projeto.biblioteca_digital.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "tb_funcionario")
-public class Funcionario extends Usuario {
+@Table(name = "tb_livro")
+public class Livro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String cargo;
-    private float salario;
 
+    private String nome;
+
+    private String descricao;
+
+    private double valor;
 }
