@@ -10,15 +10,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "tb_livro")
-public class Livro {
+public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome;
+    private String name;
 
-    private String descricao;
+    private String description;
 
-    private double valor;
+    private double value;
+
+    private Long unitsAvailable;
 }
