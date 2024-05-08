@@ -4,21 +4,26 @@ import com.projeto.biblioteca_digital.entity.Book;
 import com.projeto.biblioteca_digital.entity.User;
 import com.projeto.biblioteca_digital.entity.form.UserForm;
 import com.projeto.biblioteca_digital.entity.form.UserLoginForm;
+import com.projeto.biblioteca_digital.repository.BookRepository;
 import com.projeto.biblioteca_digital.repository.UserRepository;
 import com.projeto.biblioteca_digital.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
-    private UserRepository repository;
+    private UserRepository userRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     private PasswordEncoder passwordEncoder;
 
@@ -30,7 +35,7 @@ public class UserServiceImpl implements UserService {
         String encoder = this.passwordEncoder.encode(form.getPassword());
         User user = new User();
 
-        if (repository.existsByCpf(form.getCpf())) {
+        if (userRepository.existsByCpf(form.getCpf())) {
             return "CPF já está cadastrado no sistema!";
         } else {
             user.setFullName(form.getFullName());
@@ -39,28 +44,80 @@ public class UserServiceImpl implements UserService {
             user.setPassword(encoder);
             user.setCard(form.getCard());
             user.setEmail(form.getEmail());
-            repository.save(user);
+            userRepository.save(user);
             return "Usuário criado com sucesso!";
         }
     }
     @Override
     public List<User> getAll() {
-        return repository.findAll();
+        return userRepository.findAll();
     }
 
     @Override
     public Optional<User> getOne(Long id){
-        return repository.findById(id);
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public Optional<Book> borrowBook(Long userId, Long bookId) {
+        try{
+            Optional<User> optionalUser = userRepository.findById(userId);
+            Optional<Book> optionalBook = bookRepository.findById(bookId);
+
+            if(optionalBook.isPresent() && optionalUser.isPresent()){
+                Book book = optionalBook.get();
+                User user = optionalUser.get();
+
+                if(book.isAvailable()){
+                    user.addBorrowedBooks(book);
+                    userRepository.save(user);
+                    return Optional.of(book);
+                } else{
+                    return Optional.empty();
+                }
+            } else{
+                return Optional.empty();
+            }
+        }catch (NoSuchElementException e){
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Book> returnBook(Long userId, Long bookId) {
+        try {
+            Optional<User> optionalUser = userRepository.findById(userId);
+            Optional<Book> optionalBook = bookRepository.findById(bookId);
+
+            if (optionalUser.isPresent() && optionalBook.isPresent()){
+                Book book = optionalBook.get();
+                User user = optionalUser.get();
+
+                if(user.getBorrowedBooks().contains(book)){
+                    user.removeBorrowedBook(book);
+                    userRepository.save(user);
+                    return Optional.of(book);
+                } else{
+                    return Optional.empty();
+                }
+            } else{
+                return Optional.empty();
+            }
+        } catch (NoSuchElementException e){
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
 
     @Override
     public void delete(Long id) {
-        repository.deleteById(id);
+        userRepository.deleteById(id);
     }
 
     @Override
     public Boolean validateUser(UserLoginForm form) {
-        User user = repository.findByEmail(form.getEmail());
+        User user = userRepository.findByEmail(form.getEmail());
         return passwordEncoder.matches(form.getPassword(), user.getPassword());
     }
 }

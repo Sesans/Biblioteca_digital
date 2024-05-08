@@ -21,13 +21,13 @@ public class BookController {
     @Autowired
     private BookServiceImpl service;
 
-    @PostMapping
+    @PostMapping("/criar")
     public ResponseEntity<Book> create(@Valid @RequestBody BookForm form) {
         Book book = service.create(form);
         return ResponseEntity.status(201).body(book);
     }
 
-    @GetMapping
+    @GetMapping("/listar")
     public ResponseEntity<List<Book>> getAll() {
         List<Book> books = service.getAll();
         return ResponseEntity.status(200).body(books);
@@ -55,7 +55,7 @@ public class BookController {
         return ResponseEntity.status(200).body(books);
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<Book> update(@Valid @RequestBody BookForm form) {
         Book book = service.update(form);
         return ResponseEntity.status(201).body(book);

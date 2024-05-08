@@ -26,7 +26,5 @@ public class BookForm {
     private double value;
 
     @Positive
-    @NotBlank(message = "O campo Unidades Disponíveis deve ser preenchido!")
-    @Size(min = 1, max = 99, message = "Unidades devem estar entre {min} e {max}")
     private Long unitsAvailable;
 }

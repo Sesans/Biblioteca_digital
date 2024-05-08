@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,5 +24,15 @@ public class User {
     private String password;
     private String card;
     private String email;
+    @OneToMany(fetch = FetchType.LAZY)
+    private Set<Book> borrowedBooks;
+
+    public void addBorrowedBooks(Book book){
+        borrowedBooks.add(book);
+    }
+
+    public void removeBorrowedBook(Book book){
+        borrowedBooks.remove(book);
+    }
 
 }
