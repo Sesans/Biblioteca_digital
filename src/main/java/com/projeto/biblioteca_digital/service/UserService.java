@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    String create(UserForm form);
-
     List<User> getAll();
 
     Optional<User> getOne(Long id);

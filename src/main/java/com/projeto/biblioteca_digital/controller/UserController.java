@@ -2,10 +2,8 @@ package com.projeto.biblioteca_digital.controller;
 
 import com.projeto.biblioteca_digital.entity.Book;
 import com.projeto.biblioteca_digital.entity.User;
-import com.projeto.biblioteca_digital.entity.form.UserForm;
 import com.projeto.biblioteca_digital.service.UserService;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,11 +19,6 @@ public class UserController {
 
     @Autowired
     private UserService service;
-
-    @PostMapping("/users/add")
-    public ResponseEntity<String> create(@Valid @RequestBody UserForm form){
-        return ResponseEntity.status(200).body(service.create(form));
-    }
 
     @GetMapping("/users/listar")
     public ResponseEntity<List<User>> getAll(){

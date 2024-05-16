@@ -6,6 +6,7 @@ import com.projeto.biblioteca_digital.entity.User;
 import com.projeto.biblioteca_digital.entity.form.UserForm;
 import com.projeto.biblioteca_digital.repository.UserRepository;
 import com.projeto.biblioteca_digital.security.TokenService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,7 +39,7 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<ResponseDTO> register(@RequestBody UserForm body){
+    public ResponseEntity<ResponseDTO> register(@Valid @RequestBody UserForm body){
         Optional<User> user = this.userRepository.findByEmail(body.getEmail());
         if(user.isEmpty()){
             User newUser = new User();

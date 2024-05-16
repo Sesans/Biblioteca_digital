@@ -22,27 +22,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private BookRepository bookRepository;
 
-    private final PasswordEncoder passwordEncoder;
-
-    public UserServiceImpl(){
-        this.passwordEncoder = new BCryptPasswordEncoder();
-    }
-
-    public String create(UserForm form) {
-        String encoder = this.passwordEncoder.encode(form.getPassword());
-        User user = new User();
-
-        if (userRepository.existsByCpf(form.getCpf())) {
-            return "CPF já está cadastrado no sistema!";
-        } else {
-            user.setUsername(form.getUsername());
-            user.setEmail(form.getEmail());
-            user.setPassword(encoder);
-            user.setCpf(form.getCpf());
-            userRepository.save(user);
-            return "Usuário criado com sucesso!";
-        }
-    }
     @Override
     public List<User> getAll() {
         return userRepository.findAll();
