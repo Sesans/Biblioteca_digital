@@ -15,3 +15,7 @@ logging:
     org:
       hibernate:
         type: trace
+
+api:
+  security:
+    token: my-secret

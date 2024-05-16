@@ -3,7 +3,6 @@ package com.projeto.biblioteca_digital.service.impl;
 import com.projeto.biblioteca_digital.entity.Book;
 import com.projeto.biblioteca_digital.entity.User;
 import com.projeto.biblioteca_digital.entity.form.UserForm;
-import com.projeto.biblioteca_digital.entity.form.UserLoginForm;
 import com.projeto.biblioteca_digital.repository.BookRepository;
 import com.projeto.biblioteca_digital.repository.UserRepository;
 import com.projeto.biblioteca_digital.service.UserService;
@@ -11,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -25,7 +22,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private BookRepository bookRepository;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(){
         this.passwordEncoder = new BCryptPasswordEncoder();
@@ -38,12 +35,10 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByCpf(form.getCpf())) {
             return "CPF já está cadastrado no sistema!";
         } else {
-            user.setFullName(form.getFullName());
-            user.setCpf(form.getCpf());
-            user.setUserName(form.getUserName());
-            user.setPassword(encoder);
-            user.setCard(form.getCard());
+            user.setUsername(form.getUsername());
             user.setEmail(form.getEmail());
+            user.setPassword(encoder);
+            user.setCpf(form.getCpf());
             userRepository.save(user);
             return "Usuário criado com sucesso!";
         }
@@ -68,8 +63,10 @@ public class UserServiceImpl implements UserService {
                 Book book = optionalBook.get();
                 User user = optionalUser.get();
 
-                if(book.isAvailable()){
+                if(book.isAvailable() && book.getUnitsAvailable()>0){
                     user.addBorrowedBooks(book);
+                    book.setUnitsAvailable(book.getUnitsAvailable()-1);
+                    bookRepository.save(book);
                     userRepository.save(user);
                     return Optional.of(book);
                 } else{
@@ -79,7 +76,7 @@ public class UserServiceImpl implements UserService {
                 return Optional.empty();
             }
         }catch (NoSuchElementException e){
-            e.printStackTrace();
+            System.err.println(e);
             return Optional.empty();
         }
     }
@@ -113,11 +110,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long id) {
         userRepository.deleteById(id);
-    }
-
-    @Override
-    public Boolean validateUser(UserLoginForm form) {
-        User user = userRepository.findByEmail(form.getEmail());
-        return passwordEncoder.matches(form.getPassword(), user.getPassword());
     }
 }

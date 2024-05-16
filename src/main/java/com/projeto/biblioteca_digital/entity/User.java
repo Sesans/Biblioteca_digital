@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -18,13 +16,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String fullName;
     private String cpf;
-    private String userName;
+    private String username;
     private String password;
-    private String card;
     private String email;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Book> borrowedBooks;
 
     public void addBorrowedBooks(Book book){

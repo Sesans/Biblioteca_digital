@@ -3,37 +3,24 @@ package com.projeto.biblioteca_digital.controller;
 import com.projeto.biblioteca_digital.entity.Book;
 import com.projeto.biblioteca_digital.entity.User;
 import com.projeto.biblioteca_digital.entity.form.UserForm;
-import com.projeto.biblioteca_digital.entity.form.UserLoginForm;
 import com.projeto.biblioteca_digital.service.UserService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping
+@CrossOrigin("*")
+@Validated
 public class UserController {
 
     @Autowired
     private UserService service;
-
-    @GetMapping
-    public String welcome(){
-        return "Bem-vindo a página inicial!";
-    }
-
-    @GetMapping("/users/criar")
-    public ModelAndView cadastro(){
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("cadastro");
-        return mv;
-    }
 
     @PostMapping("/users/add")
     public ResponseEntity<String> create(@Valid @RequestBody UserForm form){
@@ -53,16 +40,6 @@ public class UserController {
             return ResponseEntity.status(200).body(user);
         }else{
             return ResponseEntity.status(404).build();
-        }
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<String> validateUser(@RequestBody UserLoginForm form){
-        Boolean valid = service.validateUser(form);
-        if(valid){
-            return ResponseEntity.status(200).body("Usuário logado com sucesso!");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nome de usuário ou senha estão incorretos!");
         }
     }
 

@@ -15,26 +15,19 @@ import org.hibernate.validator.constraints.br.CPF;
 public class UserForm {
 
     @NotBlank
-    @Size(min = 5, max = 50)
-    private String fullName;
-
-    @NotBlank
     //@CPF
     private String cpf;
 
     @NotBlank
     @Size(min = 4, max = 15)
-    private String userName;
+    private String username;
+
+    @NotBlank
+    @Email
+    private String email;
 
     @NotBlank
     @Size(min = 8, max = 20)
     private String password;
 
-    //@CreditCardNumber
-    @NotBlank
-    private String Card;
-
-    @NotBlank
-    @Email
-    private String email;
 }
